@@ -1,0 +1,22 @@
+digraph ER {
+ graph [rankdir=LR, bgcolor="white", pad=0.25, nodesep=0.7, ranksep=0.8, fontname="Noto Sans CJK SC"];
+ node [shape=record, style="rounded,filled", fontname="Noto Sans CJK SC", fontsize=10.5, color="#526BB5", fillcolor="#F7F9FF"];
+ edge [color="#586FAE", penwidth=1.2, arrowsize=0.7, fontname="Noto Sans CJK SC", fontsize=9];
+ users [label="{users|PK id\lusername\lpassword_hash\lis_admin\lcreated_at\l}", fillcolor="#E8EEFF"];
+ datasets [label="{datasets|PK id\lFK user_id\lname\loriginal_name\lfile_path\lprocessed_path\lrow_count / col_count\lcolumns_json / quality_json\l}"];
+ cleaning [label="{cleaning_records|PK id\lFK dataset_id\lFK user_id\loperation\lparams_json\lbefore_rows / after_rows\l}"];
+ tasks [label="{analysis_tasks|PK id\lFK dataset_id\lFK user_id\lname\lanalysis_type\lparams_json\lresult_json\lchart_json\lstatus\l}"];
+ conv [label="{ai_conversations|PK id\lFK user_id\lFK dataset_id\ltitle\lcreated_at\l}"];
+ messages [label="{ai_messages|PK id\lFK conversation_id\lrole\lcontent\lplan_json\lcreated_at\l}"];
+ reports [label="{reports|PK id\lFK user_id\lFK dataset_id\ltitle\lsummary\lcontent_html\lcreated_at\l}"];
+ users -> datasets [label="1 : N"];
+ users -> cleaning [label="1 : N"];
+ users -> tasks [label="1 : N"];
+ users -> conv [label="1 : N"];
+ users -> reports [label="1 : N"];
+ datasets -> cleaning [label="1 : N"];
+ datasets -> tasks [label="1 : N"];
+ datasets -> conv [label="1 : N"];
+ datasets -> reports [label="1 : N"];
+ conv -> messages [label="1 : N"];
+}

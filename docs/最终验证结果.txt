@@ -1,0 +1,31 @@
+InsightPilot 最终构建验证结果
+============================
+验证日期：2026-06-17
+
+1. 自动化测试
+....                                                                     [100%]
+4 passed in 5.63s
+
+2. Python 语法检查
+PASS：30 个 Python 文件通过语法编译。
+
+3. 实训报告文件
+DOCX 完整性：No errors detected in compressed data of docs/孙振宇-2024111137-《Python Web应用实训》实训报告-InsightPilot.docx.
+PDF 页数：32 页
+PDF 页面规格：595.304 x 841.89 pts (A4)
+
+4. 本地前端静态资源
+Bootstrap CSS：162764 字节
+Plotly.js：4838938 字节
+
+5. 已完成的自动化覆盖
+- 用户注册、登录、数据上传
+- 分组聚合分析
+- AI 规则计划生成
+- 报告生成
+- 同字段线性回归安全校验
+- 分析服务单元测试
+
+6. 构建环境说明
+本次构建容器使用 Python 3.13 和 SQLite 内存数据库完成自动化测试；项目正式推荐 Python 3.10/3.11 与 MySQL 5.7。
+

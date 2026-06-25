@@ -1,0 +1,21 @@
+digraph G {
+ graph [rankdir=LR, bgcolor="white", pad=0.25, nodesep=0.35, ranksep=0.55, fontname="Noto Sans CJK SC"];
+ node [shape=box, style="rounded,filled", fontname="Noto Sans CJK SC", fontsize=12, color="#4C68B2", fillcolor="#F4F7FF", width=1.7, height=0.7];
+ edge [color="#566EAF", penwidth=1.4, arrowsize=0.8, fontname="Noto Sans CJK SC", fontsize=10];
+ q [label="用户自然语言问题", fillcolor="#E7F0FF"];
+ schema [label="读取字段结构\n名称 / 类型 / 缺失率"];
+ plan [label="规则引擎或大模型\n生成 JSON 分析计划"];
+ validate [shape=diamond, label="白名单与参数校验", fillcolor="#FFF2D8", color="#C58A24"];
+ execute [label="Pandas / Scikit-learn\n执行真实计算"];
+ chart [label="Plotly.js\n生成交互图表"];
+ explain [label="大模型或规则模板\n基于真实结果解释"];
+ save [label="保存分析任务\n对话与报告记录", fillcolor="#E8F8EE", color="#469A67"];
+ reject [label="拒绝执行并返回错误", fillcolor="#FFE8E8", color="#C65A5A"];
+ q -> schema -> plan -> validate;
+ validate -> execute [label="通过"];
+ validate -> reject [label="不通过"];
+ execute -> chart;
+ execute -> explain;
+ chart -> save;
+ explain -> save;
+}

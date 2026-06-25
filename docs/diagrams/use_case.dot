@@ -1,0 +1,22 @@
+digraph G {
+ graph [rankdir=LR, bgcolor="white", pad=0.3, nodesep=0.45, ranksep=0.5, fontname="Noto Sans CJK SC"];
+ node [fontname="Noto Sans CJK SC"];
+ edge [fontname="Noto Sans CJK SC", color="#5E72AC"];
+ user [shape=plaintext, label="普通用户"];
+ admin [shape=plaintext, label="管理员（扩展）"];
+ subgraph cluster_sys {
+   label="InsightPilot 系统边界"; color="#8FA3D8"; style="rounded,dashed";
+   node [shape=ellipse, style=filled, fillcolor="#F4F7FF", color="#536CB8", fontsize=11];
+   u1 [label="注册与登录"];
+   u2 [label="上传和管理数据集"];
+   u3 [label="查看质量报告"];
+   u4 [label="执行数据清洗"];
+   u5 [label="执行统计分析"];
+   u6 [label="生成可视化图表"];
+   u7 [label="自然语言询问数据"];
+   u8 [label="生成与导出报告"];
+   a1 [label="查看系统运行情况"];
+ }
+ user -> {u1 u2 u3 u4 u5 u6 u7 u8};
+ admin -> {u1 a1};
+}

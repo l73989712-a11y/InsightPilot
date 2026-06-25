@@ -1,0 +1,43 @@
+digraph G {
+  graph [rankdir=TB, bgcolor="white", pad=0.3, nodesep=0.45, ranksep=0.65, fontname="Noto Sans CJK SC"];
+  node [shape=box, style="rounded,filled", fontname="Noto Sans CJK SC", fontsize=13, color="#4D67B1", fillcolor="#F5F8FF", margin="0.18,0.10"];
+  edge [color="#6078B8", penwidth=1.4, arrowsize=0.8, fontname="Noto Sans CJK SC"];
+
+  user [label="用户浏览器\nBootstrap + Plotly.js", fillcolor="#E9F2FF"];
+  web [label="Flask Web 应用\n路由 / 模板 / 会话 / CSRF", fillcolor="#E7EDFF"];
+
+  subgraph cluster_modules {
+    label="业务模块层";
+    color="#A7B7E8";
+    style="rounded,dashed";
+    auth [label="用户认证"];
+    datasets [label="数据集管理"];
+    cleaning [label="数据清洗"];
+    analysis [label="统计分析"];
+    ai [label="AI 数据助手"];
+    report [label="报告生成"];
+    {rank=same; auth; datasets; cleaning; analysis; ai; report;}
+  }
+
+  subgraph cluster_services {
+    label="服务与算法层";
+    color="#A7B7E8";
+    style="rounded,dashed";
+    pandas [label="Pandas / NumPy\n载入、清洗、统计"];
+    sklearn [label="Scikit-learn\n回归、聚类"];
+    planner [label="分析计划校验器\n白名单 + 参数校验"];
+    llm [label="规则引擎 / 大模型接口\n意图理解与结果解释"];
+    {rank=same; pandas; sklearn; planner; llm;}
+  }
+
+  mysql [shape=cylinder, label="MySQL 5.7\n用户、元数据、分析记录、报告", fillcolor="#FFF4DE", color="#C8902F"];
+  files [shape=folder, label="文件存储\n原始数据 / 清洗后数据", fillcolor="#FFF4DE", color="#C8902F"];
+
+  user -> web;
+  web -> auth; web -> datasets; web -> cleaning; web -> analysis; web -> ai; web -> report;
+  datasets -> pandas; cleaning -> pandas; analysis -> pandas; analysis -> sklearn;
+  ai -> planner; planner -> pandas; planner -> sklearn; planner -> llm;
+  report -> pandas;
+  auth -> mysql; datasets -> mysql; cleaning -> mysql; analysis -> mysql; ai -> mysql; report -> mysql;
+  datasets -> files; cleaning -> files; pandas -> files [dir=both];
+}

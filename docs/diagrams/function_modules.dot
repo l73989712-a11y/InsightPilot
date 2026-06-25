@@ -1,0 +1,15 @@
+digraph G {
+ graph [rankdir=TB, bgcolor="white", pad=0.3, nodesep=0.35, ranksep=0.6, fontname="Noto Sans CJK SC"];
+ node [shape=box, style="rounded,filled", fontname="Noto Sans CJK SC", fontsize=12, color="#536CB8", fillcolor="#F7F9FF"];
+ edge [color="#6379B6", penwidth=1.2, arrowsize=0.7];
+ root [label="InsightPilot\nAI 智能数据分析与可视化平台", fillcolor="#DDE7FF", fontsize=15];
+ a [label="用户管理\n注册 / 登录 / 退出"];
+ b [label="数据集管理\n上传 / 预览 / 下载 / 删除"];
+ c [label="质量检测\n缺失 / 重复 / 异常 / 健康度"];
+ d [label="数据清洗\n填补 / 去重 / 标准化 / 异常处理"];
+ e [label="统计分析\n描述 / 频数 / 聚合 / 相关 / 回归 / 聚类"];
+ f [label="可视化\n柱状 / 折线 / 散点 / 热力图"];
+ g [label="AI 助手\n自然语言计划 / 安全校验 / 智能解释"];
+ h [label="报告中心\n保存记录 / HTML 报告 / 导出"];
+ root -> {a b c d e f g h};
+}
