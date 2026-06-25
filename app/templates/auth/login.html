@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}登录 - InsightPilot{% endblock %}
+{% block content %}
+<div class="auth-card">
+  <div class="text-center mb-4">
+    <div class="brand-badge">AI</div>
+    <h2 class="mt-3">InsightPilot</h2>
+    <p class="text-muted">AI 智能数据分析与可视化平台</p>
+  </div>
+  <form method="post">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+      {{ form.username.label(class="form-label") }}
+      {{ form.username(class="form-control", placeholder="请输入用户名") }}
+    </div>
+    <div class="mb-3">
+      {{ form.password.label(class="form-label") }}
+      {{ form.password(class="form-control", placeholder="请输入密码") }}
+    </div>
+    {{ form.submit(class="btn btn-primary w-100") }}
+  </form>
+  <p class="text-center mt-3 mb-0">没有账号？<a href="{{ url_for('auth.register') }}">立即注册</a></p>
+</div>
+{% endblock %}

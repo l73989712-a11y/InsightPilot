@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}首页 - InsightPilot{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="mb-1">数据分析工作台</h2>
+    <p class="text-muted mb-0">上传数据、完成清洗、统计分析并生成 AI 解读。</p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('datasets.upload') }}">上传新数据</a>
+</div>
+
+<div class="row g-3 mb-4">
+  {% for label, value, icon in [
+    ('数据集数量', stats.datasets, '📁'),
+    ('累计分析任务', stats.analyses, '📊'),
+    ('已生成报告', stats.reports, '📄'),
+    ('累计数据行数', stats.rows, '🧮')
+  ] %}
+  <div class="col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon">{{ icon }}</div>
+      <div><div class="text-muted">{{ label }}</div><div class="stat-value">{{ value }}</div></div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="card app-card">
+  <div class="card-header bg-white d-flex justify-content-between align-items-center">
+    <strong>最近数据集</strong>
+    <a href="{{ url_for('datasets.list_datasets') }}">查看全部</a>
+  </div>
+  <div class="card-body">
+    {% if datasets %}
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead><tr><th>名称</th><th>规模</th><th>健康度</th><th>上传时间</th><th></th></tr></thead>
+        <tbody>
+        {% for item in datasets %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>{{ item.row_count }} × {{ item.col_count }}</td>
+          <td><span class="badge text-bg-success">{{ item.quality.get('health_score', '-') }}</span></td>
+          <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td><a class="btn btn-sm btn-outline-primary" href="{{ url_for('datasets.detail', dataset_id=item.id) }}">打开</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <div class="empty-state">尚未上传数据集。</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

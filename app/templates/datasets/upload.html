@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}上传数据 - InsightPilot{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card app-card">
+      <div class="card-body p-4">
+        <h3>上传数据集</h3>
+        <p class="text-muted">支持 CSV、XLS 和 XLSX，建议不超过 5 万行。</p>
+        <form method="post" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="mb-3">
+            <label class="form-label">数据集名称</label>
+            <input class="form-control" name="name" placeholder="不填写则使用文件名">
+          </div>
+          <div class="upload-zone mb-3">
+            <input class="form-control" type="file" name="file" accept=".csv,.xls,.xlsx" required>
+            <div class="small text-muted mt-2">系统会自动检测字段类型、缺失值、重复值和异常值。</div>
+          </div>
+          <button class="btn btn-primary" type="submit">上传并分析</button>
+          <a class="btn btn-light" href="{{ url_for('datasets.list_datasets') }}">返回</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

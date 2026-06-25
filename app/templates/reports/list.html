@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}报告中心 - InsightPilot{% endblock %}
+{% block content %}
+<div class="mb-4"><h2>报告中心</h2><p class="text-muted">查看和导出系统生成的数据分析报告。</p></div>
+<div class="card app-card">
+  <div class="card-body">
+    <table class="table align-middle">
+      <thead><tr><th>报告标题</th><th>数据集</th><th>生成时间</th><th></th></tr></thead>
+      <tbody>
+      {% for report in reports %}
+      <tr>
+        <td>{{ report.title }}</td><td>{{ report.dataset.name }}</td>
+        <td>{{ report.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td><a class="btn btn-sm btn-primary" href="{{ url_for('reports.detail', report_id=report.id) }}">查看</a></td>
+      </tr>
+      {% else %}<tr><td colspan="4" class="text-muted">暂无报告。</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

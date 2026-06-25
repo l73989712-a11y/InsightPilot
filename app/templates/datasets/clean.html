@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}数据清洗 - {{ dataset.name }}{% endblock %}
+{% block content %}
+<div class="mb-4">
+  <h2>数据清洗</h2>
+  <p class="text-muted">{{ dataset.name }} · 当前 {{ dataset.row_count }} 行</p>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card app-card">
+      <div class="card-body">
+        <form method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="mb-3">
+            <label class="form-label">清洗操作</label>
+            <select class="form-select" name="operation" id="operation">
+              <option value="drop_duplicates">删除重复数据</option>
+              <option value="drop_missing">删除包含缺失值的行</option>
+              <option value="fill_missing">填补缺失值</option>
+              <option value="strip_strings">清理文本前后空格</option>
+              <option value="remove_outliers">按 IQR 删除异常值</option>
+              <option value="zscore">Z-score 标准化</option>
+              <option value="minmax">Min-Max 标准化</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">作用字段（不选表示自动选择适用字段）</label>
+            <div class="column-grid">
+            {% for col in dataset.columns %}
+              <label class="form-check">
+                <input class="form-check-input" type="checkbox" name="columns" value="{{ col.name }}">
+                <span class="form-check-label">{{ col.name }}</span>
+              </label>
+            {% endfor %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">填补策略</label>
+              <select class="form-select" name="strategy">
+                <option value="mean">均值</option><option value="median">中位数</option>
+                <option value="mode">众数</option><option value="constant">固定值</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">固定值</label>
+              <input class="form-control" name="constant">
+            </div>
+          </div>
+          <button class="btn btn-primary">执行清洗</button>
+          <a class="btn btn-light" href="{{ url_for('datasets.detail', dataset_id=dataset.id) }}">返回数据集</a>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="card app-card">
+      <div class="card-header bg-white"><strong>清洗记录</strong></div>
+      <div class="card-body">
+        {% for item in records %}
+          <div class="history-item">
+            <strong>{{ item.operation }}</strong>
+            <div class="small text-muted">{{ item.before_rows }} → {{ item.after_rows }} 行</div>
+            <div class="small text-muted">{{ item.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+          </div>
+        {% else %}
+          <div class="text-muted">暂无清洗记录。</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

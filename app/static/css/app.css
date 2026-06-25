@@ -1,0 +1,23 @@
+:root{--primary:#3157d5;--bg:#f4f7fb;--text:#24324a;--border:#e2e8f0}
+body{background:var(--bg);color:var(--text);font-family:Inter,"Microsoft YaHei",sans-serif}
+.app-navbar{background:linear-gradient(100deg,#233d8f,#3157d5)}
+.app-card{border:0;border-radius:14px;box-shadow:0 7px 24px rgba(35,61,143,.08)}
+.auth-wrapper{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#dce7ff,#f5f7fb 55%)}
+.auth-card{width:min(420px,92vw);background:#fff;padding:34px;border-radius:18px;box-shadow:0 20px 60px rgba(35,61,143,.16)}
+.brand-badge{width:58px;height:58px;margin:auto;border-radius:16px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#3157d5,#6f8cff);color:#fff;font-weight:800;font-size:22px}
+.stat-card,.metric-card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 7px 24px rgba(35,61,143,.07);display:flex;align-items:center;gap:15px}
+.stat-icon{font-size:28px}.stat-value,.metric-value{font-size:28px;font-weight:700}
+.metric-card{display:block}.metric-value{margin-top:8px}
+.health-score{display:inline-flex;width:46px;height:46px;border-radius:50%;align-items:center;justify-content:center;background:#e8fff2;color:#138a4b;font-weight:700}
+.dataset-meta{display:flex;gap:12px;color:#667085;font-size:14px}
+.empty-state{padding:50px 20px;text-align:center;color:#7c879d;border:1px dashed #ccd5e2;border-radius:12px}
+.upload-zone{padding:24px;border:2px dashed #c7d3e7;border-radius:12px;background:#f8fbff}
+.column-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:240px;overflow:auto;border:1px solid var(--border);padding:12px;border-radius:10px}
+.history-item{border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;background:#fff}
+.task-button{cursor:pointer}.task-button:hover{border-color:#8fa6ff}
+.chart-box{height:420px}.plan-box{margin:0;max-height:250px;overflow:auto;background:#f6f8fb;padding:12px;border-radius:10px}
+.ai-panel{min-height:680px}.chat-messages{height:520px;overflow:auto;padding-right:5px}
+.chat{padding:11px 13px;margin:9px 0;border-radius:12px;max-width:90%;white-space:pre-wrap}
+.chat.user{margin-left:auto;background:#3157d5;color:#fff}.chat.assistant{background:#eef2f8}
+.report-frame{background:#fff;overflow:auto}.report-frame>html{max-width:100%}
+@media(max-width:768px){.column-grid{grid-template-columns:1fr}.chart-box{height:320px}.ai-panel{min-height:auto}.chat-messages{height:360px}}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}{{ dataset.name }} - InsightPilot{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+  <div>
+    <h2>{{ dataset.name }}</h2>
+    <p class="text-muted">{{ dataset.original_name }} · {{ dataset.row_count }} 行 × {{ dataset.col_count }} 列</p>
+  </div>
+  <div class="d-flex flex-wrap gap-2">
+    <a class="btn btn-outline-secondary" href="{{ url_for('datasets.clean', dataset_id=dataset.id) }}">数据清洗</a>
+    <a class="btn btn-primary" href="{{ url_for('analysis.workbench', dataset_id=dataset.id) }}">统计分析</a>
+    <a class="btn btn-info text-white" href="{{ url_for('ai.chat', dataset_id=dataset.id) }}">AI 助手</a>
+    <form method="post" action="{{ url_for('reports.generate', dataset_id=dataset.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn btn-outline-primary">生成报告</button>
+    </form>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  {% for label, value in [
+    ('数据健康度', dataset.quality.get('health_score', '-')),
+    ('缺失单元格', dataset.quality.get('missing_cells', '-')),
+    ('重复行', dataset.quality.get('duplicate_rows', '-')),
+    ('异常值', dataset.quality.get('outlier_count', '-'))
+  ] %}
+  <div class="col-md-3"><div class="metric-card"><div class="text-muted">{{ label }}</div><div class="metric-value">{{ value }}</div></div></div>
+  {% endfor %}
+</div>
+
+<div class="card app-card mb-4">
+  <div class="card-header bg-white"><strong>字段质量</strong></div>
+  <div class="card-body table-responsive">
+    <table class="table table-sm align-middle">
+      <thead><tr><th>字段</th><th>类型</th><th>缺失数</th><th>缺失率</th><th>唯一值</th><th>异常值</th></tr></thead>
+      <tbody>
+      {% for col in dataset.quality.get('columns', []) %}
+        <tr>
+          <td>{{ col.name }}</td><td>{{ col.dtype }}</td><td>{{ col.missing_count }}</td>
+          <td>{{ col.missing_rate }}%</td><td>{{ col.unique_count }}</td><td>{{ col.outlier_count }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card app-card">
+  <div class="card-header bg-white d-flex justify-content-between"><strong>数据预览</strong><a href="{{ url_for('datasets.download', dataset_id=dataset.id) }}">下载当前版本</a></div>
+  <div class="card-body table-responsive">
+    <table class="table table-hover table-sm">
+      <thead><tr>{% for col in preview_columns %}<th>{{ col }}</th>{% endfor %}</tr></thead>
+      <tbody>
+      {% for row in preview %}
+        <tr>{% for col in preview_columns %}<td>{{ row.get(col, '') }}</td>{% endfor %}</tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

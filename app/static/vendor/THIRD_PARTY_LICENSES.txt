@@ -1,0 +1,10 @@
+Bootstrap v5.1.1 - MIT License
+https://getbootstrap.com/
+Copyright 2011-2021 The Bootstrap Authors
+Copyright 2011-2021 Twitter, Inc.
+
+Plotly.js v3.3.1 - MIT License
+https://plotly.com/javascript/
+Copyright 2012-2025 Plotly, Inc.
+
+The minified files retain their upstream license headers.

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}统计分析 - {{ dataset.name }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+  <div><h2>统计分析工作台</h2><p class="text-muted">{{ dataset.name }}</p></div>
+  <a class="btn btn-info text-white" href="{{ url_for('ai.chat', dataset_id=dataset.id) }}">切换到 AI 助手</a>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-4">
+    <div class="card app-card">
+      <div class="card-body">
+        <label class="form-label">分析类型</label>
+        <select class="form-select mb-3" id="analysisAction">
+          <option value="describe">描述性统计</option>
+          <option value="value_counts">频数统计</option>
+          <option value="group_aggregate">分组聚合</option>
+          <option value="correlation">相关分析</option>
+          <option value="linear_regression">线性回归</option>
+          <option value="kmeans">K-Means 聚类</option>
+        </select>
+
+        <label class="form-label">字段一 / 分组字段</label>
+        <select class="form-select mb-3" id="field1">
+          {% for col in dataset.columns %}<option value="{{ col.name }}">{{ col.name }}</option>{% endfor %}
+        </select>
+
+        <label class="form-label">字段二 / 数值字段</label>
+        <select class="form-select mb-3" id="field2">
+          {% for col in dataset.columns %}<option value="{{ col.name }}">{{ col.name }}</option>{% endfor %}
+        </select>
+
+        <label class="form-label">聚合方法</label>
+        <select class="form-select mb-3" id="method">
+          <option value="mean">平均值</option><option value="sum">总和</option>
+          <option value="count">数量</option><option value="max">最大值</option><option value="min">最小值</option>
+        </select>
+
+        <button class="btn btn-primary w-100" id="runAnalysis">执行分析</button>
+        <div id="analysisMessage" class="small mt-3"></div>
+      </div>
+    </div>
+
+    <div class="card app-card mt-4">
+      <div class="card-header bg-white"><strong>最近任务</strong></div>
+      <div class="card-body">
+        {% for task in tasks %}
+          <button class="history-item task-button w-100 text-start" data-task-id="{{ task.id }}">
+            <strong>{{ task.name }}</strong><span class="small text-muted d-block">{{ task.created_at.strftime('%m-%d %H:%M') }}</span>
+          </button>
+        {% else %}<div class="text-muted">暂无分析记录。</div>{% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="card app-card mb-4">
+      <div class="card-header bg-white"><strong>图表结果</strong></div>
+      <div class="card-body"><div id="analysisChart" class="chart-box"></div></div>
+    </div>
+    <div class="card app-card">
+      <div class="card-header bg-white"><strong>数据结果</strong></div>
+      <div class="card-body table-responsive" id="analysisTable"><div class="empty-state">选择分析类型后点击“执行分析”。</div></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+const datasetId = {{ dataset.id }};
+document.getElementById('runAnalysis').addEventListener('click', async () => {
+  const action = document.getElementById('analysisAction').value;
+  const f1 = document.getElementById('field1').value;
+  const f2 = document.getElementById('field2').value;
+  const method = document.getElementById('method').value;
+  let params = {};
+  if (action === 'value_counts') params = {column: f1, top_n: 20};
+  else if (action === 'group_aggregate') params = {group_by: [f1], metrics: [{column: f2, method}], chart_type: 'bar'};
+  else if (action === 'correlation') params = {columns: [f1, f2]};
+  else if (action === 'linear_regression') params = {x: f1, y: f2};
+  else if (action === 'kmeans') params = {columns: [f1, f2], n_clusters: 3};
+
+  setMessage('analysisMessage', '正在计算...', 'text-muted');
+  const data = await postJSON(`/analysis/${datasetId}/run`, {action, params, name: action});
+  if (!data.ok) return setMessage('analysisMessage', data.message, 'text-danger');
+  setMessage('analysisMessage', '分析完成并已保存。', 'text-success');
+  renderChart('analysisChart', data.chart);
+  renderResultTable('analysisTable', data.result);
+});
+
+document.querySelectorAll('.task-button').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const response = await fetch(`/analysis/task/${btn.dataset.taskId}`);
+    const data = await response.json();
+    renderChart('analysisChart', data.chart);
+    renderResultTable('analysisTable', data.result);
+  });
+});
+</script>
+{% endblock %}

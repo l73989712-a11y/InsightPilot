@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}AI 助手 - {{ dataset.name }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+  <div><h2>AI 数据助手</h2><p class="text-muted">{{ dataset.name }} · 大模型负责理解，Pandas 负责计算</p></div>
+  <a class="btn btn-outline-primary" href="{{ url_for('analysis.workbench', dataset_id=dataset.id) }}">手动分析</a>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="card app-card ai-panel">
+      <div class="card-body">
+        <div id="chatMessages" class="chat-messages">
+          <div class="chat assistant">你好！可以问我：“按专业统计平均成绩并绘制柱状图”。</div>
+          {% for msg in messages %}
+            <div class="chat {{ msg.role }}">{{ msg.content }}</div>
+          {% endfor %}
+        </div>
+        <div class="input-group mt-3">
+          <textarea class="form-control" id="question" rows="2" placeholder="输入自然语言分析问题"></textarea>
+          <button class="btn btn-primary" id="askButton">发送</button>
+        </div>
+        <div class="small text-muted mt-2">安全机制：只执行白名单分析动作，不执行模型生成代码。</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="card app-card mb-4">
+      <div class="card-header bg-white"><strong>AI 生成的分析计划</strong></div>
+      <div class="card-body"><pre id="planBox" class="plan-box">等待提问...</pre></div>
+    </div>
+    <div class="card app-card mb-4">
+      <div class="card-header bg-white"><strong>可视化结果</strong></div>
+      <div class="card-body"><div id="aiChart" class="chart-box"></div></div>
+    </div>
+    <div class="card app-card">
+      <div class="card-header bg-white"><strong>计算结果</strong></div>
+      <div class="card-body table-responsive" id="aiTable"><div class="empty-state">结果将在这里显示。</div></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+const datasetId = {{ dataset.id }};
+let conversationId = {{ conversations[0].id if conversations else 'null' }};
+document.getElementById('askButton').addEventListener('click', async () => {
+  const input = document.getElementById('question');
+  const question = input.value.trim();
+  if (!question) return;
+  appendChat('user', question);
+  input.value = '';
+  const button = document.getElementById('askButton');
+  button.disabled = true;
+  button.textContent = '分析中...';
+  const data = await postJSON(`/ai/${datasetId}/ask`, {question, conversation_id: conversationId});
+  button.disabled = false;
+  button.textContent = '发送';
+  if (!data.ok) return appendChat('assistant', `分析失败：${data.message}`);
+  conversationId = data.conversation_id;
+  appendChat('assistant', data.summary);
+  document.getElementById('planBox').textContent = JSON.stringify(data.plan, null, 2);
+  renderChart('aiChart', data.chart);
+  renderResultTable('aiTable', data.result);
+});
+function appendChat(role, text) {
+  const box = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `chat ${role}`;
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+</script>
+{% endblock %}
